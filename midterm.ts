@@ -330,13 +330,19 @@ Example 3:
 
 export function replaceEntry(fstr: FileSystemTree[], newEntry: FileSystemTree): FileSystemTree[] {
   
+    let index = 0;
     for(const x of fstr){
-        if(x.name == newEntry.name){
-        fstr[0] = newEntry;
+      
+        if(x.name === newEntry.name){
+            
+            fstr[index] = newEntry;
+           
+        }
+        
+    index = index + 1;   
+        
     }
-    }
-    
-    
+ 
     return fstr;
 }
 
