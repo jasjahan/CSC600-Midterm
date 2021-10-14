@@ -277,11 +277,11 @@ Example 2:
 export function findFileOrDirectory(dir: Directory, name: string): FileSystemTree | undefined {
   
     for(const x of dir.contents){
-       if(name !== x.name){
-           return undefined;
+       if(name === x.name){
+           return x;
        }
        else {
-           return x;
+           return undefined;
        }
    }
 }
