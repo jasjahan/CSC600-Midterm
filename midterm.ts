@@ -464,13 +464,18 @@ fileSystemTreeToString(copyFileSystemTree(fstr1)) =
 ** ----------------------------------------------------- */
 
 export function copyFileSystemTree(fstr: FileSystemTree): FileSystemTree {
-  switch(fstr.tag){
+  
+    switch(fstr.tag){
       case "FILE":{
           return makeFile(fstr.name);
       }
       
       case "DIRECTORY":{
-          return makeDirectory(fstr.name, fstr.contents);
+          let arr = [];
+          for(let x of fstr.contents){
+              arr = arr.concat(copyFileSystemTree(x));
+          }
+          return makeDirectory(fstr.name, arr);
       }
   }
 }
