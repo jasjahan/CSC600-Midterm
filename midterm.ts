@@ -35,7 +35,7 @@ https://docs.google.com/document/d/1uGFPowk-c_xXFDGJtAqfTz92xyxlDLeR043MTtFiQs4/
 ** ============================================================================ */
 
 export const HONOR_PLEDGE = "I pledge on my honor that this assignment is my own work.";
-export const SIGNATURE = "<your-full-name-here>"; // TODO: FILL ME IN
+export const SIGNATURE = "MST JASMINE JAHAN"; // TODO: FILL ME IN
 
 // If you used any resources, please list them here
 export const RESOURCES_CONSULTED = [
@@ -203,8 +203,15 @@ Example 2:
 ** ----------------------------------------------------- */
 
 export function getName(fstr: FileSystemTree): string {
-  // TODO: implement me
-  throw Error("TODO: implement me");
+  switch(fstr.tag){
+      case "FILE":{
+          return fstr.name;
+      }
+      
+      case "DIRECTORY":{
+          return fstr.name;
+      }
+  }
 }
 
 
@@ -236,8 +243,11 @@ Exmaple 2:
 ** ----------------------------------------------------- */
 
 export function getContentNames(dir: Directory): string[] {
-  // TODO: implement me
-  throw Error("TODO: implement me");
+  let acc = [];
+    for(const x of dir.contents){
+        acc = acc.concat(x.name);
+    }
+    return acc;
 }
 
 
@@ -265,8 +275,15 @@ Example 2:
 ** ----------------------------------------------------- */
 
 export function findFileOrDirectory(dir: Directory, name: string): FileSystemTree | undefined {
-  // TODO: implement me
-  throw Error("TODO: implement me");
+  
+    for(const x of dir.contents){
+       if(name !== x.name){
+           return undefined;
+       }
+       else {
+           return x;
+       }
+   }
 }
 
 
@@ -312,8 +329,15 @@ Example 3:
 ** ----------------------------------------------------- */
 
 export function replaceEntry(fstr: FileSystemTree[], newEntry: FileSystemTree): FileSystemTree[] {
-  // TODO: implement me
-  throw Error("TODO: implement me");
+  
+    for(const x of fstr){
+        if(x.name == newEntry.name){
+        fstr[0] = newEntry;
+    }
+    }
+    
+    
+    return fstr;
 }
 
 
@@ -375,8 +399,31 @@ export function createFileOrDirInDir(dir: Directory, tag: "FILE" | "DIRECTORY", 
   //
   // return : a directory with a file or directory created
   
-  // TODO: implement me
-  throw Error("TODO: implement me");
+       if(tag === "FILE" ){
+            for(const x of dir.contents){
+                if(x.name === name){
+                    return dir;
+                }
+            }
+            const newfile = makeFile(name);
+            dir.contents.push(newfile);
+            return dir;     
+        }
+        
+        else if(tag === "DIRECTORY"){
+            for(const y of dir.contents){
+                if(y.name === name){
+                    return dir
+                }
+            }
+            
+            const newdir = makeDirectory(name,[]);
+            dir.contents.push(newdir);
+            return dir;
+        }
+        else{
+            return null;
+        }
 }
 
 
@@ -411,12 +458,15 @@ fileSystemTreeToString(copyFileSystemTree(fstr1)) =
 ** ----------------------------------------------------- */
 
 export function copyFileSystemTree(fstr: FileSystemTree): FileSystemTree {
-  // fstr   : the FileSystemTree to copy
-  //
-  // return : the FileSystemTree copy
-  
-  // TODO: implement me
-  throw Error("TODO: implement me");
+  switch(fstr.tag){
+      case "FILE":{
+          return makeFile(fstr.name);
+      }
+      
+      case "DIRECTORY":{
+          return makeDirectory(fstr.name, fstr.contents);
+      }
+  }
 }
 
 
@@ -569,15 +619,45 @@ Hints:
 ** ============================================================================ */
 
 export function createFileOrDir(fstr: FileSystemTree, path: string[], tag: "FILE" | "DIRECTORY", name: string): FileSystemTree {
-  // fstr   : the FileSystemTree we are modifying
-  // path   : the path to a directory where we will create a file or directory
-  // tag    :  "FILE" means we should create a file and "DIRECTORY" means we should create a directory
-  // name   : the name of the file or directory to create
-  //
-  // return : a FileSystemTree with a created file
   
-  // TODO: implement me
-  throw Error("TODO: implement me");
+  if(path.length === 0){
+       return fstr;
+   }
+   
+   let count = 0;
+   let root = null;
+    
+   if(path[0] === fstr.name){  
+       count = 1;
+       root = fstr;
+       for(let x of path){
+           if(root.tag === "DIRECTORY" && (x !== "/")){
+
+               let newroot = null;
+
+               for(let y of root.contents){
+                   if(x === y.name){
+                       count += 1;
+                       newroot = y;
+                       break;
+                   }  
+               }
+               if(newroot != null){
+                   root = newroot;
+               }
+
+           }
+       }
+    }
+    
+   if(count == path.length){
+      root =  createFileOrDirInDir(root, tag, name);
+   } else {
+       
+   }
+       
+  return fstr;
+ 
 }
 
 
