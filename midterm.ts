@@ -722,8 +722,24 @@ findFilesOrDirs(fstr1, (name: string) => name.endsWith(".js")) =
   []
 
 ** ============================================================================ */
+function newfunction(fstr: FileSystemTree, predicate: (name: string) => boolean, path: string[]):string[][] {
+    if(predicate(fstr.name)){
+        return [path.concat(fstr.name)];
+    }
+
+    if(fstr.tag === "DIRECTORY"){
+        let arr = [];    
+        let arr1 = [];
+        arr1 = arr1.concat(path,fstr.name);
+
+        for(const y of fstr.contents){
+           arr = arr.concat(newfunction(y, predicate, arr1));
+        }
+        return arr;
+    }
+    return [];
+}
 
 export function findFilesOrDirs(fstr: FileSystemTree, predicate: (name: string) => boolean): string[][] {
-  // Optional TODO: implement me
-  throw Error("Optional TODO: implement me");
+   return newfunction(fstr, predicate, []);
 }
