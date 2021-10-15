@@ -1,3 +1,4 @@
+"use strict";
 /* ==========================================================================  **
 ## Midterm Instructions
 
@@ -9,7 +10,7 @@ https://docs.google.com/document/d/1uGFPowk-c_xXFDGJtAqfTz92xyxlDLeR043MTtFiQs4/
 
 
 1. Push your solution, contained entirely in midterm.ts, back to the github classroom
-   repository. Please make sure you solution compiles!!! 
+   repository. Please make sure you solution compiles!!!
 
    To run the typescript compiler (`tsc`), make sure you have it installed
    ```
@@ -28,57 +29,26 @@ https://docs.google.com/document/d/1uGFPowk-c_xXFDGJtAqfTz92xyxlDLeR043MTtFiQs4/
 3. Fill in everything that has TODO.
 
 ** ============================================================================ */
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.findFilesOrDirs = exports.createFileOrDir = exports.copyFileSystemTree = exports.createFileOrDirInDir = exports.replaceEntry = exports.findFileOrDirectory = exports.getContentNames = exports.getName = exports.fileSystemTreeToString = exports.fstr1 = exports.makeDirectory = exports.makeFile = exports.RESOURCES_CONSULTED = exports.SIGNATURE = exports.HONOR_PLEDGE = void 0;
 /* ==========================================================================  **
 ## Honor Pledge
 ** ============================================================================ */
-
-export const HONOR_PLEDGE = "I pledge on my honor that this assignment is my own work.";
-export const SIGNATURE = "MST JASMINE JAHAN"; // TODO: FILL ME IN
-
+exports.HONOR_PLEDGE = "I pledge on my honor that this assignment is my own work.";
+exports.SIGNATURE = "MST JASMINE JAHAN"; // TODO: FILL ME IN
 // If you used any resources, please list them here
-export const RESOURCES_CONSULTED = [
+exports.RESOURCES_CONSULTED = [
     "www.google.com", // TODO: FILL ME IN
 ];
-
-
-/* ==========================================================================  **
-# File System
-
-For this midterm, we will be working with a **file system**. A file system organizes
-a collection of **files** and **directories** in a tree structure. You can access
-the file system on a Windows machine through a graphical user interface (GUI) using
-`File Explorer` or on an Apple machine through `Finder`. By clicking on a directory,
-we can **recursively** traverse into it's contents, which may contain more directories
-and/or files. Your task on this midterm will be to implement a toy model of some of the
-usual functionality associated with a file system such as creating and deleting files.
-
-The toy model we will use for this midterm is the algebraic data-type given below.
-** ============================================================================ */
-
-export type File = { 
-  tag: "FILE",                   // A file, e.g., `file1.txt`, `file2.png`, `file3.mpeg`
-  name: string,                  // The name of the file
-};
-
-export type Directory = { 
-  tag: "DIRECTORY",              // A directory, e.g., `Documents`, `usr`, `tmp`
-  name: string,                  // The name of the directory
-  contents: FileSystemTree[]     // An array of the files and sub-directories of this dictectory.
-};
-
-export type FileSystemTree = File | Directory;
-
-export function makeFile(name: string): File {
+function makeFile(name) {
     // Constructor for creating a file
     return {
         tag: "FILE",
         name: name
     };
 }
-
-export function makeDirectory(name: string, contents: FileSystemTree[]): Directory {
+exports.makeFile = makeFile;
+function makeDirectory(name, contents) {
     // Constructor for creating a directory
     return {
         tag: "DIRECTORY",
@@ -86,8 +56,7 @@ export function makeDirectory(name: string, contents: FileSystemTree[]): Directo
         contents: contents
     };
 }
-
-
+exports.makeDirectory = makeDirectory;
 /* ==========================================================================  **
 Here is an example of a file-system tree.
 
@@ -130,38 +99,34 @@ Here is an example of a file-system tree.
        [ "/", "Applications" ]
 
 ** ============================================================================ */
-
-export const fstr1 =
-    makeDirectory("/", [
-        makeDirectory("Users",[
-            makeDirectory("foobar", [
-                makeDirectory("Documents", [
-                    makeDirectory("CSC600", [
-                        makeFile("hw1.ts"),
-                        makeFile("hw2.ts"),
-                        makeFile("hw3.ts"),
-                        makeFile("midterm.ts"),
-                    ]),    
+exports.fstr1 = makeDirectory("/", [
+    makeDirectory("Users", [
+        makeDirectory("foobar", [
+            makeDirectory("Documents", [
+                makeDirectory("CSC600", [
+                    makeFile("hw1.ts"),
+                    makeFile("hw2.ts"),
+                    makeFile("hw3.ts"),
+                    makeFile("midterm.ts"),
                 ]),
-                makeDirectory("Downloads", [
-                    makeFile("squid-game-1.mpeg")
-                ]),
-            ])
-        ]),
-        makeDirectory("Applications", [
-            makeDirectory("Chrome", [
-                makeFile("Chrome.app")
             ]),
-            makeDirectory("VSCode", [
-                makeFile("VSCode.app")
-            ])
+            makeDirectory("Downloads", [
+                makeFile("squid-game-1.mpeg")
+            ]),
         ])
-    ]);
-
-
-export function fileSystemTreeToString(fstr: FileSystemTree): string {
+    ]),
+    makeDirectory("Applications", [
+        makeDirectory("Chrome", [
+            makeFile("Chrome.app")
+        ]),
+        makeDirectory("VSCode", [
+            makeFile("VSCode.app")
+        ])
+    ])
+]);
+function fileSystemTreeToString(fstr) {
     // Helper function that converts a FileSystemTree into an indented string
-    function go(indent: number, fstr: FileSystemTree): string {
+    function go(indent, fstr) {
         switch (fstr.tag) {
             case "FILE": {
                 return `${" ".repeat(indent)}> ${fstr.name}`;
@@ -175,17 +140,13 @@ export function fileSystemTreeToString(fstr: FileSystemTree): string {
     }
     return go(0, fstr);
 }
-
-console.log(fileSystemTreeToString(fstr1));
-
-
-
+exports.fileSystemTreeToString = fileSystemTreeToString;
+console.log(fileSystemTreeToString(exports.fstr1));
 /* ==========================================================================  **
 # Problem 1 (25pts).
 
 We will write some helper functions that read properties from a FileSystemTree.
 ** ============================================================================ */
-
 /* ----------------------------------------------------- **
 ### Problem 1a (5pts)
 
@@ -201,20 +162,17 @@ Example 2:
     getName(makeFile("foobar")) = "foobar"
 
 ** ----------------------------------------------------- */
-
-export function getName(fstr: FileSystemTree): string {
-  switch(fstr.tag){
-      case "FILE":{
-          return fstr.name;
-      }
-      
-      case "DIRECTORY":{
-          return fstr.name;
-      }
-  }
+function getName(fstr) {
+    switch (fstr.tag) {
+        case "FILE": {
+            return fstr.name;
+        }
+        case "DIRECTORY": {
+            return fstr.name;
+        }
+    }
 }
-
-
+exports.getName = getName;
 /* ----------------------------------------------------- **
 ### Problem 1b (10pts).
 
@@ -228,7 +186,7 @@ Example 1:
 
     getContentNames(makeDirectory("foobar", [
       makeFile("squid-game-1.mpeg")
-    ])) = 
+    ])) =
       ["squid-game-1.mpeg"]
 
 
@@ -237,20 +195,18 @@ Exmaple 2:
     getContentNames(makeDirectory("/", [
       makeFile("squid-game-1.mpeg"),
       makeFile("squid-game-2.mpeg")
-    ])) = 
+    ])) =
       ["squid-game-1.mpeg", "squid-game-2.mpeg"]
 
 ** ----------------------------------------------------- */
-
-export function getContentNames(dir: Directory): string[] {
-  let acc : string[] = [];
-    for(const x of dir.contents){
+function getContentNames(dir) {
+    let acc = [];
+    for (const x of dir.contents) {
         acc = acc.concat(x.name);
     }
     return acc;
 }
-
-
+exports.getContentNames = getContentNames;
 /* ----------------------------------------------------- **
 ### Problem 1c (10pts).
 
@@ -262,39 +218,34 @@ Example 1:
 
     findFileOrDirectory(makeDirectory("foobar", [
       makeFile("squid-game-1.mpeg")
-    ]), "squid-game-1.mpeg") = 
+    ]), "squid-game-1.mpeg") =
       makeFile("squid-game-1.mpeg")
 
 Example 2:
 
     findFileOrDirectory(makeDirectory("foobar", [
       makeFile("squid-game-1.mpeg")
-    ]), "squid-game-2.mpeg") = 
+    ]), "squid-game-2.mpeg") =
       undefined
 
 ** ----------------------------------------------------- */
-
-export function findFileOrDirectory(dir: Directory, name: string): FileSystemTree | undefined {
-  
-    for(const x of dir.contents){
-       if(name === x.name){
-           return x;
-       }
-       else {
-           return undefined;
-       }
-   }
+function findFileOrDirectory(dir, name) {
+    for (const x of dir.contents) {
+        if (name === x.name) {
+            return x;
+        }
+        else {
+            return undefined;
+        }
+    }
 }
-
-
+exports.findFileOrDirectory = findFileOrDirectory;
 /* ==========================================================================  **
 # Problem 2 (40pts).
 
 We will write some helper functions that **modify** an existing FileSystemTree
 and produce new FileSystemTrees.
 ** ============================================================================ */
-
-
 /* ----------------------------------------------------- **
 ### Problem 2a (10pts).
 
@@ -304,13 +255,13 @@ the name of the new entry. Do **not** modify the other entries.
 
 Example 1:
     const xs = [makeFile("squid-game-1.mpeg")];
-    findFileOrDirectory(xs, makeFile("squid-game-1.mpeg")) = 
+    findFileOrDirectory(xs, makeFile("squid-game-1.mpeg")) =
       [makeFile("squid-game-1.mpeg")]
 
 
 Example 2:
     const xs = [makeFile("squid-game-1.mpeg")];
-    findFileOrDirectory(xs, makeDirectory("squid-game-1.mpeg", [])) = 
+    findFileOrDirectory(xs, makeDirectory("squid-game-1.mpeg", [])) =
       [makeDirectory("squid-game-1.mpeg", [])]
 
 
@@ -323,30 +274,21 @@ Example 3:
         makeFile("squid-game-2.mpeg")
     ])
 
-    findFileOrDirectory([dir1, makeFile("squid-game-3.mpeg")], dir2) = 
+    findFileOrDirectory([dir1, makeFile("squid-game-3.mpeg")], dir2) =
       [dir2]
 
 ** ----------------------------------------------------- */
-
-export function replaceEntry(fstr: FileSystemTree[], newEntry: FileSystemTree): FileSystemTree[] {
-  
+function replaceEntry(fstr, newEntry) {
     let index = 0;
-    for(const x of fstr){
-      
-        if(x.name === newEntry.name){
-            
+    for (const x of fstr) {
+        if (x.name === newEntry.name) {
             fstr[index] = newEntry;
-           
         }
-        
-    index = index + 1;   
-        
+        index = index + 1;
     }
- 
     return fstr;
 }
-
-
+exports.replaceEntry = replaceEntry;
 /* ----------------------------------------------------- **
 # Problem 2b (15pts).
 
@@ -364,7 +306,7 @@ Suppose `dir` is a directory with fileSystemTreeToString representation
 
 Example 1:
 
-fileSystemTreeToString(createFileOrDirInDir(dir, "FILE", "hw1.ts")) = 
+fileSystemTreeToString(createFileOrDirInDir(dir, "FILE", "hw1.ts")) =
 
     CSC600
       > hw1.ts
@@ -375,7 +317,7 @@ fileSystemTreeToString(createFileOrDirInDir(dir, "FILE", "hw1.ts")) =
 
 Example 2:
 
-fileSystemTreeToString(createFileOrDirInDir(dir, "DIRECTORY", "final")) = 
+fileSystemTreeToString(createFileOrDirInDir(dir, "DIRECTORY", "final")) =
 
     CSC600
       > hw1.ts
@@ -387,7 +329,7 @@ fileSystemTreeToString(createFileOrDirInDir(dir, "DIRECTORY", "final")) =
 
 Example 3:
 
-fileSystemTreeToString(createFileOrDirInDir(dir, "DIRECTORY", "hw4.ts")) = 
+fileSystemTreeToString(createFileOrDirInDir(dir, "DIRECTORY", "hw4.ts")) =
 
     CSC600
       > hw1.ts
@@ -397,35 +339,29 @@ fileSystemTreeToString(createFileOrDirInDir(dir, "DIRECTORY", "hw4.ts")) =
       > hw4.ts
 
 ** ----------------------------------------------------- */
-
-export function createFileOrDirInDir(dir: Directory, tag: "FILE" | "DIRECTORY", name: string): Directory {
-  if(tag === "FILE" ){
-            for(const x of dir.contents){
-                if(x.name === name){
-                    return dir;
-                }
+function createFileOrDirInDir(dir, tag, name) {
+    if (tag === "FILE") {
+        for (const x of dir.contents) {
+            if (x.name === name) {
+                return dir;
             }
-            const newfile = makeFile(name);
-            dir.contents.push(newfile);
-            return dir;     
         }
-        
-        else {
-            for(const y of dir.contents){
-                if(y.name === name){
-                    return dir
-                }
+        const newfile = makeFile(name);
+        dir.contents.push(newfile);
+        return dir;
+    }
+    else {
+        for (const y of dir.contents) {
+            if (y.name === name) {
+                return dir;
             }
-            
-            const newdir = makeDirectory(name,[]);
-            dir.contents.push(newdir);
-            return dir;
         }
-  
-      
+        const newdir = makeDirectory(name, []);
+        dir.contents.push(newdir);
+        return dir;
+    }
 }
-
-
+exports.createFileOrDirInDir = createFileOrDirInDir;
 /* ----------------------------------------------------- **
 # Problem 2c (15pts).
 
@@ -455,26 +391,21 @@ fileSystemTreeToString(copyFileSystemTree(fstr1)) =
       > VSCode.app
 
 ** ----------------------------------------------------- */
-
-export function copyFileSystemTree(fstr: FileSystemTree): FileSystemTree {
-  
-    switch(fstr.tag){
-      case "FILE":{
-          return makeFile(fstr.name);
-      }
-      
-      case "DIRECTORY":{
-          let arr : FileSystemTree[] = [];
-          for(let x of fstr.contents){
-              arr = arr.concat(copyFileSystemTree(x));
-          }
-          return makeDirectory(fstr.name, arr);
-      }
-  }
-  
+function copyFileSystemTree(fstr) {
+    switch (fstr.tag) {
+        case "FILE": {
+            return makeFile(fstr.name);
+        }
+        case "DIRECTORY": {
+            let arr = [];
+            for (let x of fstr.contents) {
+                arr = arr.concat(copyFileSystemTree(x));
+            }
+            return makeDirectory(fstr.name, arr);
+        }
+    }
 }
-
-
+exports.copyFileSystemTree = copyFileSystemTree;
 /* ==========================================================================  **
 # Problem 3 (35pts).
 
@@ -622,48 +553,38 @@ Hints:
 3. You may want to use `createFileOrDirInDir`.
 
 ** ============================================================================ */
-
-export function createFileOrDir(fstr: FileSystemTree, path: string[], tag: "FILE" | "DIRECTORY", name: string): FileSystemTree {
-  
-  if(path.length === 0){
-       return fstr;
-   }
-   
-   let count = 0;
-   let root = null;
-    
-   if(path[0] === fstr.name){  
-       count = 1;
-       root = fstr;
-       for(let x of path){
-           if(root.tag === "DIRECTORY" && (x !== "/")){
-
-               let newroot = null;
-
-               for(let y of root.contents){
-                   if(x === y.name){
-                       count += 1;
-                       newroot = y;
-                       break;
-                   }  
-               }
-               if(newroot != null){
-                   root = newroot;
-               }
-
-           }
-       }
+function createFileOrDir(fstr, path, tag, name) {
+    if (path.length === 0) {
+        return fstr;
     }
-    
-   if(count == path.length && root != null && root.tag === "DIRECTORY"){
-      root = 
-          createFileOrDirInDir(root, tag, name);
-   } 
-    
-  return fstr;
+    let count = 0;
+    let root = null;
+    if (path[0] === fstr.name) {
+        count = 1;
+        root = fstr;
+        for (let x of path) {
+            if (root.tag === "DIRECTORY" && (x !== "/")) {
+                let newroot = null;
+                for (let y of root.contents) {
+                    if (x === y.name) {
+                        count += 1;
+                        newroot = y;
+                        break;
+                    }
+                }
+                if (newroot != null) {
+                    root = newroot;
+                }
+            }
+        }
+    }
+    if (count == path.length && root != null && root.tag === "DIRECTORY") {
+        root =
+            createFileOrDirInDir(root, tag, name);
+    }
+    return fstr;
 }
-
-
+exports.createFileOrDir = createFileOrDir;
 /* ==========================================================================  **
 # BONUS / Extra Credit (25 pts).
 
@@ -714,24 +635,22 @@ findFilesOrDirs(fstr1, (name: string) => name.endsWith(".js")) =
   []
 
 ** ============================================================================ */
-function newfunction(fstr: FileSystemTree, predicate: (name: string) => boolean, path: string[]):string[][] {
-    if(predicate(fstr.name)){
+function newfunction(fstr, predicate, path) {
+    if (predicate(fstr.name)) {
         return [path.concat(fstr.name)];
     }
-
-    if(fstr.tag === "DIRECTORY"){
-        let arr : string[][] = [];    
-        let arr1: string[] = [];
-        arr1 = arr1.concat(path,fstr.name);
-
-        for(const y of fstr.contents){
-           arr = arr.concat(newfunction(y, predicate, arr1));
+    if (fstr.tag === "DIRECTORY") {
+        let arr = [];
+        let arr1 = [];
+        arr1 = arr1.concat(path, fstr.name);
+        for (const y of fstr.contents) {
+            arr = arr.concat(newfunction(y, predicate, arr1));
         }
         return arr;
     }
     return [];
 }
-
-export function findFilesOrDirs(fstr: FileSystemTree, predicate: (name: string) => boolean): string[][] {
-   return newfunction(fstr, predicate, []);
+function findFilesOrDirs(fstr, predicate) {
+    return newfunction(fstr, predicate, []);
 }
+exports.findFilesOrDirs = findFilesOrDirs;
